@@ -63,6 +63,18 @@ export const TableContainer = styled.section`
       line-height: 24px;
     }
 
+    tbody {
+      tr {
+        transition: translate 0.5s;
+        cursor: pointer;
+      }
+
+      tr:hover {
+        transform: translateX(10px);
+        border: 1px solid #ddd;
+      }
+    }
+
     td {
       padding: 20px 32px;
       border: 0;
