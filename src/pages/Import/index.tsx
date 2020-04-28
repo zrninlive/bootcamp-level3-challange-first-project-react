@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import filesize from 'filesize';
 
@@ -23,19 +24,29 @@ const Import: React.FC = () => {
   const history = useHistory();
 
   async function handleUpload(): Promise<void> {
-    // const data = new FormData();
-
-    // TODO
+    const data = new FormData();
 
     try {
-      // await api.post('/transactions/import', data);
+      const [csvFile] = uploadedFiles;
+      data.append('file', csvFile.file, csvFile.name);
+      await api.post('/transactions/import', data);
+      toast.success('Registros importados com suceso!');
+
+      setUploadedFiles([]);
+      history.push('/');
     } catch (err) {
-      // console.log(err.response.error);
+      toast.error('Falha ao importar registro, tente novamente!');
     }
   }
 
   function submitFile(files: File[]): void {
-    // TODO
+    const newFile: FileProps = {
+      file: files[0],
+      name: files[0].name,
+      readableSize: filesize(files[0].size),
+    };
+
+    setUploadedFiles([newFile]);
   }
 
   return (
