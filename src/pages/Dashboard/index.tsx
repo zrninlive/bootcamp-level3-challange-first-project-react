@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
@@ -13,47 +13,42 @@ import formatDate from '../../utils/formatDate';
 
 import { Container, CardContainer, Card, TableContainer } from './styles';
 
-interface TransactionAPI {
+interface Transaction {
   id: string;
   title: string;
   value: number;
   type: 'income' | 'outcome';
   category: { title: string };
   created_at: string;
-}
-
-interface Transaction extends TransactionAPI {
   formattedValue: string;
   formattedDate: string;
 }
 
-interface BalanceAPI {
+interface Balance {
   income: number;
   outcome: number;
   total: number;
-}
-
-interface Balance {
-  income: string;
-  outcome: string;
-  total: string;
+  formattedIncome: string;
+  formattedOutcome: string;
+  formattedTotal: string;
 }
 
 const formatTransaction: (
-  transaction: TransactionAPI,
+  transaction: Transaction,
 ) => Transaction = transaction => ({
   ...transaction,
   formattedValue: formatValue(transaction.value),
   formattedDate: formatDate(transaction.created_at),
 });
 
-const formatBalance: (balance: BalanceAPI) => Balance = balance => ({
-  income: formatValue(balance.income),
-  outcome: formatValue(balance.outcome),
-  total: formatValue(balance.total),
+const formatBalance: (balance: Balance) => Balance = balance => ({
+  ...balance,
+  formattedIncome: formatValue(balance.income),
+  formattedOutcome: formatValue(balance.outcome),
+  formattedTotal: formatValue(balance.total),
 });
 
-const Dashboard: React.FC = () => {
+function Dashboard(): ReactElement {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [balance, setBalance] = useState<Balance>({} as Balance);
 
@@ -78,21 +73,21 @@ const Dashboard: React.FC = () => {
               <p>Entradas</p>
               <img src={income} alt="Income" />
             </header>
-            <h1 data-testid="balance-income">{balance.income}</h1>
+            <h1 data-testid="balance-income">{balance.formattedIncome}</h1>
           </Card>
           <Card>
             <header>
               <p>Saídas</p>
               <img src={outcome} alt="Outcome" />
             </header>
-            <h1 data-testid="balance-outcome">{balance.outcome}</h1>
+            <h1 data-testid="balance-outcome">{balance.formattedOutcome}</h1>
           </Card>
           <Card total>
             <header>
               <p>Total</p>
               <img src={total} alt="Total" />
             </header>
-            <h1 data-testid="balance-total">{balance.total}</h1>
+            <h1 data-testid="balance-total">{balance.formattedTotal}</h1>
           </Card>
         </CardContainer>
 
@@ -127,6 +122,6 @@ const Dashboard: React.FC = () => {
       </Container>
     </>
   );
-};
+}
 
-export default Dashboard;
+export default Dashboard as React.FC;
